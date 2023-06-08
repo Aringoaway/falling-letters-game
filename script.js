@@ -2,16 +2,24 @@ const startBtn = document.getElementById('startBtn');
 const gameArea = document.getElementById('gameArea');
 const timer = document.getElementById('timer');
 const scoreDisplay = document.getElementById('score');
+const resultBanner = document.getElementById('resultBanner');
 
 let gameInterval;
 let gameTime = 20;
 let score = 0;
 let goldenLetterPrice = 2;
+let gameOver = false;
 
-startBtn.addEventListener('click', startGame);
+startBtn.addEventListener('click', function() {
+	if (resultBanner) {
+		resultBanner.style.display = 'none';
+	}
+	startGame();
+});
 
 function startGame() {
 	startBtn.disabled = true;
+	score = 0;
 	gameInterval = setInterval(updateGame, 1000);
 	spawnLetter();
 }
@@ -21,19 +29,18 @@ function updateGame() {
 	timer.textContent = `Time: ${gameTime}`;
 
 	if (gameTime === 0) {
+		gameOver = true;
 		clearInterval(gameInterval);
-		clearDisplay();
 		showScoreDetails();
-	} else {
+	} else if (!gameOver) {
 		spawnLetter();
 	}
 }
 
 function clearDisplay() {
-	console.log("clear")
 	const displayedLetters =  document.querySelectorAll('.letter');
-	displayedLetters.forEach(i => {
-		i.remove();
+	displayedLetters.forEach(letter => {
+		gameArea.removeChild(letter);
 	})
 }
 
@@ -68,7 +75,7 @@ function spawnLetter() {
 
 	animationLetter.onfinish = function () {
 		letter.classList.add("not-pressed");
-		const notPressed = document.querySelector('.not-pressed');
+		let notPressed = document.querySelector('.not-pressed');
 			if (notPressed != undefined) {
 				notPressed.remove();
 			}
@@ -92,6 +99,10 @@ function spawnLetter() {
 
 function showScoreDetails() {
 	startBtn.disabled = false;
+	gameOver = false;
 	gameTime = 20;
-	alert(`Total Score: ${score} (Total Points + (Total Golden Letters * Golden Letter Price))`);
+	resultBanner.style.display = 'block';
+	resultBanner.textContent = `Total Score: ${score}`;
+	clearDisplay();
 }
+
