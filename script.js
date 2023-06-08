@@ -10,18 +10,22 @@ let score = 0;
 let goldenLetterPrice = 2;
 let gameOver = false;
 
-startBtn.addEventListener('click', function() {
-	if (resultBanner) {
-		resultBanner.style.display = 'none';
-	}
-	startGame();
-});
+startBtn.addEventListener('click', startGame);
 
 function startGame() {
 	startBtn.disabled = true;
-	score = 0;
+	resetGame();
 	gameInterval = setInterval(updateGame, 1000);
 	spawnLetter();
+}
+
+function resetGame() {
+	gameTime = 20;
+	score = 0;
+	gameOver = false;
+	timer.textContent = `Time: ${gameTime}`;
+	scoreDisplay.textContent = `Score: ${score}`;
+	resultBanner.style.display = 'none';
 }
 
 function updateGame() {
@@ -43,7 +47,6 @@ function clearDisplay() {
 		gameArea.removeChild(letter);
 	})
 }
-
 
 function spawnLetter() {
 	const letter = document.createElement('div');
@@ -99,8 +102,6 @@ function spawnLetter() {
 
 function showScoreDetails() {
 	startBtn.disabled = false;
-	gameOver = false;
-	gameTime = 20;
 	resultBanner.style.display = 'block';
 	resultBanner.textContent = `Total Score: ${score}`;
 	clearDisplay();
